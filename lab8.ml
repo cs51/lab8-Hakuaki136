@@ -167,7 +167,7 @@ Exercise 4: Given your implementation of Event, create a new event
 called "newswire" that should pass strings to the event handlers.
 ......................................................................*)
 
-let newswire = fun _ -> failwith "newswire not implemented" ;;
+let newswire : string WEvent.event = WEvent.new_event () ;;
 
 (* News organizations might want to register event listeners to the
 newswire so that they might report on stories. Below are functions
@@ -187,6 +187,10 @@ newswire event.
 
 (* .. *)
 
+WEvent.add_listener newswire fakeNewsNetwork ;;
+
+WEvent.add_listener newswire buzzFake ;;
+
 (* Here are some headlines to play with. *)
 
 let h1 = "the national animal of Eritrea is officially the camel!" ;;
@@ -199,6 +203,9 @@ headlines, and observe what happens!
 ......................................................................*)
 
 (* .. *)
+WEvent.fire_event newswire h1 ;;
+WEvent.fire_event newswire h2 ;;
+WEvent.fire_event newswire h3 ;;
 
 (* Imagine now that you work at Facebook, and you're growing concerned
 with the proliferation of fake news. To combat the problem, you decide
@@ -212,6 +219,11 @@ Exercise 7: Remove the newswire listeners that were previously registered.
 ......................................................................*)
 
 (* .. *)
+
+let id_a = (List.find (fun a -> a.action = fakeNewsNetwork) !newswire).id
+let id_b = List.find (fun a -> a.action = fakeNewsNetwork) !newswire
+WEvent.remove_listener newswire id_a ;;
+WEvent.remove_listener newswire buzzFake.id ;;
 
 (*......................................................................
 Exercise 8: Create a new event called publish to signal that all
